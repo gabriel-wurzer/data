@@ -85,9 +85,6 @@
       <li>Someone walking from the left half to the right half counts as <b>in</b>, the other way as
           <b>out</b>. If it is the wrong way round for your door, swap it later.</li>
     </ol>
-    <label class="field small">Room name (goes into the file name)
-      <input type="text" id="room" value="AE U1-5" maxlength="40" autocomplete="off">
-    </label>
     <p class="small" id="kept" hidden></p>
     <button class="main-button" id="b-start">Start</button>
     <div class="note">Nothing leaves your phone. The camera picture is only compared in this page,
@@ -152,8 +149,8 @@ const work = document.createElement("canvas"), wctx = work.getContext("2d", { wi
 // ---- the event log, kept in this browser only ----
 const data = load();
 function load() {
-  try { return Object.assign({ room: "", swapped: false, events: [] }, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }
-  catch { return { room: "", swapped: false, events: [] }; }
+  try { return Object.assign({ swapped: false, events: [] }, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }
+  catch { return { swapped: false, events: [] }; }
 }
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch {} }
 const occupancy = () => data.events.length ? data.events[data.events.length - 1].occupancy : 0;
@@ -200,11 +197,10 @@ function csv() {
 }
 
 function download() {
-  const room = (data.room || "room").replace(/[^A-Za-z0-9_-]+/g, "_");
   const day = data.events.length ? data.events[0].time.slice(0, 10) : isoLocal(new Date()).slice(0, 10);
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv()], { type: "text/csv" }));
-  a.download = `door_events_${room}_${day}.csv`;
+  a.download = `door_events_${day}.csv`;
   document.body.appendChild(a);
   a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
@@ -317,15 +313,12 @@ async function keepAwake() { try { wakeLock = await navigator.wakeLock?.request(
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !$("run").hidden) keepAwake(); });
 
 // ---- wiring ----
-$("room").value = data.room || $("room").value;
 if (data.events.length) {
   $("kept").hidden = false;
   $("kept").textContent = `${data.events.length} events from earlier are still here, occupancy ${occupancy()}. Counting continues from there; press Reset on the next screen to start from zero.`;
 }
 
 $("b-start").onclick = async () => {
-  data.room = $("room").value.trim();
-  save();
   try { await startCamera(); }
   catch (err) {
     const box = $("cam-error");

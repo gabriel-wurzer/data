@@ -546,7 +546,7 @@ def run_twin(csv_path, capacity, db_path, title):
     return {"events": len(events), "miscounts": miscounts, "peak": peak_value, "peak_time": peak_time}
 
 
-# YOUR CHOICE: the name of your own CSV in the data folder, e.g. "../data/door_events_AE_U1-5_2026-10-16.csv"
+# YOUR CHOICE: the name of your own CSV in the data folder, e.g. "../data/door_events_2026-10-16.csv"
 my_csv = None
 
 if my_csv is None:                                    # nothing chosen yet

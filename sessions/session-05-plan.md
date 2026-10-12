@@ -57,7 +57,7 @@ Sensoto als JSON, Prüfen und Reparieren, fünf Minuten-Schritte, SQLite, ein Pl
 ## Was schiefgehen kann
 
 - Hochladen der CSV vom Handy in den Hub: Upload-Pfeil im Dateibrowser, oder Datei an sich selbst
-  schicken. Dateiname der App: `door_events_<Raum>_<Datum>.csv`.
+  schicken. Dateiname der App: `door_events_<Datum>.csv`.
 - Kein Internet im Saal: Schritt 4 nimmt die Kopie; für eigene Aufzeichnungen vom selben Tag gibt es
   noch keine Stationswerte, der Zwilling läuft dann ohne Temperatur weiter (so gemeldet).
 - Wer die Lücke nicht hat, bekommt ab Schritt 6 Fehler; die Antwort steht im `<details>` darunter.
