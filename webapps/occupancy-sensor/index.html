@@ -336,7 +336,7 @@ $("b-start").onclick = async () => {
     return;
   }
   $("start").hidden = true; $("run").hidden = false;
-  $("room-label").textContent = data.room ? "people in " + data.room : "people in the room";
+  $("room-label").textContent = "people count";
   showCount(); showLog(); keepAwake();
   takeBackground();
   requestAnimationFrame(loop);
