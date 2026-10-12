@@ -1,0 +1,63 @@
+{
+  "network": "luftdaten-info",
+  "source": "sensor.community, served by api.sensoto.io",
+  "measures": "air temperature",
+  "unit": "°C",
+  "sensors": [
+    {
+      "district": "Leopoldstadt",
+      "district_number": 2,
+      "near": "Untere Donaustraße",
+      "device": "19330-u2edkcj6uj4",
+      "model": "DHT22",
+      "location": {
+        "lat": 48.214,
+        "lon": 16.388
+      }
+    },
+    {
+      "district": "Favoriten",
+      "district_number": 10,
+      "near": "Rotenhofgasse",
+      "device": "70488-u2edh9b3bsk",
+      "model": "BME280",
+      "location": {
+        "lat": 48.174,
+        "lon": 16.37
+      }
+    },
+    {
+      "district": "Penzing",
+      "district_number": 14,
+      "near": "Linzer Straße",
+      "device": "48206-u2ed4nbjj2n",
+      "model": "DHT22",
+      "location": {
+        "lat": 48.202,
+        "lon": 16.26
+      }
+    },
+    {
+      "district": "Floridsdorf",
+      "district_number": 21,
+      "near": "Wolfgang-Riese-Gasse",
+      "device": "77803-u2edt8wps66",
+      "model": "DHT22",
+      "location": {
+        "lat": 48.256,
+        "lon": 16.422
+      }
+    },
+    {
+      "district": "Donaustadt",
+      "district_number": 22,
+      "near": "Klara-Blum-Gasse",
+      "device": "39321-u2ef203xn64",
+      "model": "DHT22",
+      "location": {
+        "lat": 48.2106,
+        "lon": 16.5258
+      }
+    }
+  ]
+}

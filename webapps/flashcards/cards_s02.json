@@ -1,0 +1,86 @@
+[
+  {
+    "id": "url",
+    "session": 2,
+    "image": "images/url.png",
+    "question": "In https://tiss.tuwien.ac.at/course/courseDetails.xhtml?courseNr=259021#groups, which statements are right?",
+    "answers": [
+      "tiss.tuwien.ac.at is the host, the name of the machine",
+      "courseNr=259021 is a query parameter",
+      "#groups is sent to the server with the request",
+      "The port is missing, so the request cannot be sent"
+    ],
+    "correct": [0, 1],
+    "explanation": "Scheme, host, port, path, query, fragment, always in that order. The fragment stays in the browser, and a missing port means the default: 443 for https."
+  },
+  {
+    "id": "ip-dns",
+    "session": 2,
+    "image": "images/ip-dns.png",
+    "question": "What do the IP address and the DNS do?",
+    "answers": [
+      "The IP address is the number by which machines find each other, like 128.130.32.110",
+      "The DNS turns a name like tiss.tuwien.ac.at into that number",
+      "The DNS stores the web pages themselves",
+      "The IP address is the same as the URL"
+    ],
+    "correct": [0, 1],
+    "explanation": "Names are for people, numbers for machines. Before your phone can ask TISS for anything, it looks up the number in the DNS, the phone book of the internet."
+  },
+  {
+    "id": "port",
+    "session": 2,
+    "image": "images/port.png",
+    "question": "What is a port?",
+    "answers": [
+      "The door on a machine that picks the service",
+      "443 for https and 80 for http, unless the URL says otherwise",
+      "The cable socket of the server",
+      "Another word for the IP address"
+    ],
+    "correct": [0, 1],
+    "explanation": "One machine can offer web pages, ssh and e-mail at once, each behind its own number. You rarely see a port in a URL because the scheme sets the default; Jupyter on a laptop uses :8888."
+  },
+  {
+    "id": "get-post",
+    "session": 2,
+    "image": "images/get-post.png",
+    "question": "What is the difference between HTTP GET and POST?",
+    "answers": [
+      "GET asks for something named in the URL",
+      "POST sends data in the body of the request, for example a form or a sensor reading",
+      "GET is encrypted and POST is not",
+      "POST is only used for downloading files"
+    ],
+    "correct": [0, 1],
+    "explanation": "Everything a GET says sits in the URL, which ends up in histories and logs. That is why passwords travel in the body of a POST, and why encryption is a matter of https, not of the verb."
+  },
+  {
+    "id": "status-code",
+    "session": 2,
+    "image": "images/status-code.png",
+    "question": "Which statements about status codes are right?",
+    "answers": [
+      "404 means the server did not find what you asked for",
+      "A program checks the status code before it touches the content",
+      "A 404 answer never has any content",
+      "200 means the data is correct"
+    ],
+    "correct": [0, 1],
+    "explanation": "TISS answered a missing page with 404 and still sent 12 kB of friendly HTML. 200 only says the request worked, not that what came back is right."
+  },
+  {
+    "id": "query-parameter",
+    "session": 2,
+    "image": "images/query-parameter.png",
+    "question": "What does a query parameter like forecast_days=3 do?",
+    "answers": [
+      "It changes the question you ask the same machine",
+      "In Python, requests builds it from a dictionary such as {\"forecast_days\": 3}",
+      "It picks a different server",
+      "It is ignored by every server"
+    ],
+    "correct": [0, 1],
+    "explanation": "With forecast_days=7 the weather service sent 168 hourly values instead of 72; with 30 it said 400, bad request. Same host, same path, a different question."
+  }
+]

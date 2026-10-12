@@ -1,0 +1,72 @@
+[
+  {
+    "id": "s05_digital_twin",
+    "session": 5,
+    "image": "images/s05_digital_twin.png",
+    "question": "What is a digital twin of a building?",
+    "answers": [
+      "A copy of the building in data that follows what goes on in the real one",
+      "Something that sensors, a database and a picture together can make for a single room",
+      "A second, identical building built next to the first as a backup",
+      "The architect's 3D model, frozen at the day of the handover"
+    ],
+    "correct": [0, 1],
+    "explanation": "A twin follows the real building: sensors report, a database remembers, a picture shows it. A static 3D model does not follow anything."
+  },
+  {
+    "id": "s05_data_pipeline",
+    "session": 5,
+    "image": "images/s05_data_pipeline.png",
+    "question": "Which of these describe a data pipeline?",
+    "answers": [
+      "A chain of steps that takes raw data to a stored, usable result",
+      "Something that runs the same way every time, for example on a new recording",
+      "A one-off manual copy and paste of numbers into a spreadsheet",
+      "The cable that connects a sensor to the internet"
+    ],
+    "correct": [0, 1],
+    "explanation": "A pipeline is a repeatable chain of steps. In session 5, run_twin did the whole chain for any door recording."
+  },
+  {
+    "id": "s05_etl",
+    "session": 5,
+    "image": "images/s05_etl.png",
+    "question": "ETL stands for extract, transform, load. Which steps belong where?",
+    "answers": [
+      "Extract: reading the door CSV and asking Sensoto for the temperature",
+      "Transform: repairing miscounts and turning events into five-minute steps",
+      "Load: drawing the dashboard",
+      "Extract: writing the tables into the SQLite file"
+    ],
+    "correct": [0, 1],
+    "explanation": "Extract gets the raw data, transform cleans and reshapes it, load stores it (here in SQLite). Showing it comes after ETL."
+  },
+  {
+    "id": "s05_resampling",
+    "session": 5,
+    "image": "images/s05_resampling.png",
+    "question": "What does resampling do with door events?",
+    "answers": [
+      "It turns events at irregular times into one value per regular step, such as five minutes",
+      "It needs a rule for each step, for example the last count in it",
+      "It removes the miscounts from the data",
+      "It fetches more events from the sensor"
+    ],
+    "correct": [0, 1],
+    "explanation": "resample(\"5min\").last() took the count at the end of each five minutes. It changes the time steps, it does not repair anything."
+  },
+  {
+    "id": "s05_plausibility_check",
+    "session": 5,
+    "image": "images/s05_plausibility_check.png",
+    "question": "Which statements about a plausibility check are true?",
+    "answers": [
+      "It looks for values that cannot be true, such as fewer than zero people in a room",
+      "A repaired value is possible, but not necessarily true",
+      "If it finds nothing, the data is guaranteed to be correct",
+      "It can tell exactly when a missed person walked in"
+    ],
+    "correct": [0, 1],
+    "explanation": "The check only sees impossible values. In the sample, two of three mistakes cancelled out, and the repair could not tell when the missed person had entered."
+  }
+]

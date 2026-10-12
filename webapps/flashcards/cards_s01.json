@@ -1,0 +1,86 @@
+[
+  {
+    "id": "path",
+    "session": 1,
+    "image": "images/path.png",
+    "question": "What is a path, like ../data/teddy.obj?",
+    "answers": [
+      "The address of a file through its folders",
+      "A route that starts where you are: one folder up, into data, the file teddy.obj",
+      "The contents of the file teddy.obj",
+      "A web address that only works online"
+    ],
+    "correct": [0, 1],
+    "explanation": "A path names the folders to walk through. One that starts from where you are, with .. for one folder up, is a relative path and keeps working if the whole course folder moves."
+  },
+  {
+    "id": "working-directory",
+    "session": 1,
+    "image": "images/working-directory.png",
+    "question": "What is the working directory?",
+    "answers": [
+      "The folder you are in right now",
+      "The folder from which relative paths start",
+      "Always the top folder /",
+      "The folder where Python is installed"
+    ],
+    "correct": [0, 1],
+    "explanation": "pwd prints it, cd changes it. In a notebook it is the folder of the notebook, which is why mkdir -p my_files in the terminal needed a cd first."
+  },
+  {
+    "id": "text-file",
+    "session": 1,
+    "image": "images/text-file.png",
+    "question": "Which of these is true of a text file?",
+    "answers": [
+      "It holds only characters, line after line",
+      "A number read from it comes back as text until you convert it",
+      "It always knows which of its values are numbers",
+      "It can only hold words, never 3D models"
+    ],
+    "correct": [0, 1],
+    "explanation": "'14.5' read from my_room.txt is text; float() makes it a number. The teddy OBJ is a text file too: v lines for points, f lines for triangles."
+  },
+  {
+    "id": "header",
+    "session": 1,
+    "image": "images/header.png",
+    "question": "What does the header of a file do?",
+    "answers": [
+      "It says what kind of file this is, in its first line or lines",
+      "It lets a reader check it got the right kind of file before reading on",
+      "It holds the actual measurements",
+      "It is hidden and only programs can see it"
+    ],
+    "correct": [0, 1],
+    "explanation": "ROOM FILE in the first line tells a person and a program what follows. In a CSV the first line is a header too: the column names."
+  },
+  {
+    "id": "format-version",
+    "session": 1,
+    "image": "images/format-version.png",
+    "question": "Why does a file carry a format version, like 'version 2'?",
+    "answers": [
+      "So the reader knows which rules the rest of the file follows",
+      "So old files can still be read after the format changes",
+      "So the file becomes smaller",
+      "So nobody can change the format any more"
+    ],
+    "correct": [0, 1],
+    "explanation": "read_room looks at the version line first, then reads version 1 line by line and version 2 split at commas. An unknown version 3 makes it stop instead of guessing."
+  },
+  {
+    "id": "csv",
+    "session": 1,
+    "image": "images/csv.png",
+    "question": "What is a CSV file?",
+    "answers": [
+      "A table as text: column names in the first line, one row per line",
+      "Values separated by commas, which pandas reads with read_csv",
+      "A picture of a spreadsheet",
+      "A file only Excel can open"
+    ],
+    "correct": [0, 1],
+    "explanation": "my_flat.csv is plain text you can cat. pandas reads it in one line and turns columns that look like numbers into numbers."
+  }
+]

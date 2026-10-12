@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>Occupancy sensor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d12'/%3E%3Crect x='20' y='12' width='24' height='42' rx='3' fill='none' stroke='%23d8a24a' stroke-width='4'/%3E%3Ccircle cx='38' cy='34' r='3' fill='%23d8a24a'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0b0d12; --card: #141821; --edge: #222a38; --text: #e8ecf4;
+    --muted: #8b95a8; --good: #3fa46a; --bad: #c0453c; --accent: #d8a24a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); font-size: 17px; line-height: 1.5;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+  }
+  main { max-width: 620px; margin: 0 auto; padding-bottom: 32px; }
+  h1 { font-size: 22px; letter-spacing: .02em; margin: 20px 0 4px; }
+  h2 { font-size: 15px; color: var(--muted); font-weight: 600; margin: 22px 0 8px; }
+  p { margin: 6px 0 12px; }
+  .muted, .small { color: var(--muted); }
+  .small { font-size: 14px; }
+  [hidden] { display: none !important; }
+  button {
+    font: inherit; color: inherit; background: var(--card); border: 1px solid var(--edge);
+    border-radius: 12px; padding: 14px 16px; width: 100%; margin-bottom: 10px; cursor: pointer;
+  }
+  button:active { transform: scale(.995); }
+  .main-button { background: var(--accent); color: #1a1205; border: none; font-weight: 600; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+  ol { padding-left: 22px; margin: 8px 0 16px; }
+  ol li { margin-bottom: 8px; }
+  label.field { display: block; margin: 12px 0; }
+  input[type=text] {
+    width: 100%; font: inherit; color: inherit; background: var(--card); border: 1px solid var(--edge);
+    border-radius: 12px; padding: 12px; margin-top: 4px;
+  }
+  .note { border-left: 3px solid var(--accent); padding: 10px 14px; background: #131722;
+          border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 15px; }
+  .error { border-left-color: var(--bad); }
+  .count { text-align: center; margin: 12px 0 4px; }
+  .count .room { color: var(--muted); font-size: 15px; letter-spacing: .04em; }
+  .count .number { font-size: 112px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .count .number.negative { color: var(--bad); }
+  .count .last { color: var(--muted); font-size: 14px; min-height: 21px; }
+  .flash-in { animation: flashIn .8s; }
+  .flash-out { animation: flashOut .8s; }
+  @keyframes flashIn { from { color: var(--good); } }
+  @keyframes flashOut { from { color: var(--bad); } }
+  .view { position: relative; width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--edge); background: #10141d; }
+  .view video, .view canvas { display: block; width: 100%; height: auto; }
+  .view canvas { position: absolute; inset: 0; height: 100%; opacity: .75; image-rendering: pixelated; }
+  .countdown { position: absolute; inset: 0; display: grid; place-items: center; font-size: 72px; font-weight: 700;
+               background: rgba(11,13,18,.6); }
+  .meters { display: flex; gap: 10px; margin: 10px 0; font-size: 14px; color: var(--muted); }
+  .meters > div { flex: 1; }
+  .meter { height: 8px; background: var(--edge); border-radius: 4px; overflow: hidden; position: relative; margin-top: 4px; }
+  .meter > i { display: block; height: 100%; width: 0; background: var(--muted); }
+  .meter > i.on { background: var(--good); }
+  .meter > b { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .log { font-family: ui-monospace, Consolas, monospace; font-size: 13px; background: var(--card);
+         border: 1px solid var(--edge); border-radius: 12px; padding: 10px 12px; max-height: 260px; overflow-y: auto; }
+  .log div { display: flex; justify-content: space-between; gap: 8px; }
+  .log .in { color: var(--good); }
+  .log .out { color: var(--bad); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Occupancy sensor</h1>
+  <p class="muted">Your phone at a door, counting who goes in and out.</p>
+
+  <!-- start screen -->
+  <section id="start">
+    <ol>
+      <li>Place your phone at the side of a door, camera facing across the doorway, so people walk
+          through the picture from one side to the other. Lean it against something; it must not move.</li>
+      <li>Press start and step out of the picture. After three seconds the app takes a picture of the
+          empty door and compares every following frame with it.</li>
+      <li>Someone walking from the left half to the right half counts as <b>in</b>, the other way as
+          <b>out</b>. If it is the wrong way round for your door, swap it later.</li>
+    </ol>
+    <label class="field small">Room name (goes into the file name)
+      <input type="text" id="room" value="AE U1-5" maxlength="40" autocomplete="off">
+    </label>
+    <p class="small" id="kept" hidden></p>
+    <button class="main-button" id="b-start">Start</button>
+    <div class="note">Nothing leaves your phone. The camera picture is only compared in this page,
+      no images are stored or sent anywhere. The event list stays in this browser until you
+      download it or press reset.</div>
+    <div class="note error" id="cam-error" hidden></div>
+  </section>
+
+  <!-- running screen -->
+  <section id="run" hidden>
+    <div class="count">
+      <div class="room" id="room-label"></div>
+      <div class="number" id="occupancy">0</div>
+      <div class="last" id="last"></div>
+    </div>
+
+    <div class="view">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="mask"></canvas>
+      <div class="countdown" id="countdown" hidden></div>
+    </div>
+
+    <div class="meters">
+      <div>left half <span id="pct-left">0%</span><div class="meter"><i id="m-left"></i><b id="t-left"></b></div></div>
+      <div>right half <span id="pct-right">0%</span><div class="meter"><i id="m-right"></i><b id="t-right"></b></div></div>
+    </div>
+
+    <label class="field small">Threshold: <b id="threshold-value">20%</b>
+      <input type="range" id="threshold" min="2" max="60" value="20">
+      A half of the picture counts as "someone there" when at least this share of its pixels differs
+      from the empty door; raise it if the count jumps on its own, lower it if people are missed.
+    </label>
+
+    <div class="row">
+      <button id="b-background">New empty picture</button>
+      <button id="b-swap">Swap in and out</button>
+    </div>
+    <div class="row">
+      <button class="main-button" id="b-csv">Download CSV</button>
+      <button id="b-reset">Reset</button>
+    </div>
+
+    <h2 id="log-title">Events</h2>
+    <div class="log" id="log"><span class="muted">No one has passed yet.</span></div>
+    <p class="small">Nothing leaves your phone, no images are stored.</p>
+  </section>
+</main>
+
+<script>
+// ---- settings ----
+const WIDTH = 160;          // frames are shrunk to this width before comparing, enough for a door and fast
+const PIXEL_DIFF = 30;      // a pixel counts as changed when its brightness differs by more than this (0 to 255)
+const WINDOW_MS = 1500;     // the second half must light up within this time after the first
+const CLEAR_MS = 400;       // after an event, both halves must be quiet this long before the next one
+const ADAPT = 0.01;         // while nobody is there, the empty picture drifts this much toward the current frame (light changes)
+const STORE_KEY = "occupancy-sensor";
+
+const $ = id => document.getElementById(id);
+const video = $("video"), mask = $("mask"), mctx = mask.getContext("2d");
+const work = document.createElement("canvas"), wctx = work.getContext("2d", { willReadFrequently: true });
+
+// ---- the event log, kept in this browser only ----
+const data = load();
+function load() {
+  try { return Object.assign({ room: "", swapped: false, events: [] }, JSON.parse(localStorage.getItem(STORE_KEY) || "{}")); }
+  catch { return { room: "", swapped: false, events: [] }; }
+}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch {} }
+const occupancy = () => data.events.length ? data.events[data.events.length - 1].occupancy : 0;
+
+// ISO 8601 with the phone's local offset, e.g. 2026-10-16T09:02:41+02:00
+function isoLocal(d) {
+  const p = n => String(Math.floor(Math.abs(n))).padStart(2, "0");
+  const off = -d.getTimezoneOffset();
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}` +
+         `${off >= 0 ? "+" : "-"}${p(off / 60)}:${p(off % 60)}`;
+}
+
+function record(event) {
+  const occ = occupancy() + (event === "in" ? 1 : -1);
+  data.events.push({ time: isoLocal(new Date()), event, occupancy: occ });
+  save();
+  showCount(event);
+  showLog();
+}
+
+function showCount(flash) {
+  const el = $("occupancy"), occ = occupancy();
+  el.textContent = occ;
+  el.classList.toggle("negative", occ < 0);
+  if (flash) {
+    el.classList.remove("flash-in", "flash-out");
+    void el.offsetWidth;                                  // restart the animation
+    el.classList.add(flash === "in" ? "flash-in" : "flash-out");
+    const e = data.events[data.events.length - 1];
+    $("last").textContent = `${e.event} at ${e.time.slice(11, 19)}` + (occ < 0 ? " · below zero, someone was missed" : "");
+  }
+}
+
+function showLog() {
+  const n = data.events.length;
+  $("log-title").textContent = `Events, ${n}`;
+  if (!n) { $("log").innerHTML = '<span class="muted">No one has passed yet.</span>'; return; }
+  $("log").innerHTML = data.events.slice(-200).reverse().map(e =>
+    `<div><span>${e.time}</span><span class="${e.event}">${e.event}</span><span>${e.occupancy}</span></div>`).join("");
+}
+
+function csv() {
+  return "time,event,occupancy\n" + data.events.map(e => `${e.time},${e.event},${e.occupancy}`).join("\n") + "\n";
+}
+
+function download() {
+  const room = (data.room || "room").replace(/[^A-Za-z0-9_-]+/g, "_");
+  const day = data.events.length ? data.events[0].time.slice(0, 10) : isoLocal(new Date()).slice(0, 10);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv()], { type: "text/csv" }));
+  a.download = `door_events_${room}_${day}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+// ---- camera and detection ----
+let background = null, height = 0, ready = false;
+const det = { first: null, firstAt: 0, busy: false, quietSince: 0 };
+
+async function startCamera() {
+  if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+    throw new Error("The camera only works on an https:// address (or localhost). Open the page from GitHub Pages.");
+  }
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: false, video: { facingMode: { ideal: "environment" }, width: { ideal: 640 }, height: { ideal: 480 } }
+  });
+  video.srcObject = stream;
+  await new Promise(r => video.readyState >= 1 ? r() : video.onloadedmetadata = r);
+  await video.play();
+  height = Math.round(WIDTH * video.videoHeight / video.videoWidth) || 120;
+  work.width = mask.width = WIDTH;
+  work.height = mask.height = height;
+}
+
+function grayFrame() {
+  wctx.drawImage(video, 0, 0, WIDTH, height);
+  const px = wctx.getImageData(0, 0, WIDTH, height).data, g = new Float32Array(WIDTH * height);
+  for (let i = 0, j = 0; j < g.length; i += 4, j++) g[j] = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+  return g;
+}
+
+function takeBackground() {
+  ready = false;
+  const cd = $("countdown");
+  let n = 3;
+  cd.hidden = false; cd.textContent = n;
+  const tick = setInterval(() => {
+    n--;
+    if (n > 0) { cd.textContent = n; return; }
+    clearInterval(tick);
+    background = grayFrame();
+    Object.assign(det, { first: null, busy: false, quietSince: 0 });
+    cd.hidden = true;
+    ready = true;
+  }, 1000);
+}
+
+function loop() {
+  requestAnimationFrame(loop);
+  if (!ready || video.readyState < 2) return;
+  const g = grayFrame(), half = WIDTH / 2, img = mctx.createImageData(WIDTH, height);
+  let left = 0, right = 0;
+  for (let j = 0; j < g.length; j++) {
+    const changed = Math.abs(g[j] - background[j]) > PIXEL_DIFF;
+    if (changed) { (j % WIDTH < half) ? left++ : right++; img.data[j * 4 + 3] = 255; img.data[j * 4] = 216; img.data[j * 4 + 1] = 162; img.data[j * 4 + 2] = 74; }
+  }
+  mctx.putImageData(img, 0, 0);
+  mctx.fillStyle = "#e8ecf4"; mctx.fillRect(half - 0.5, 0, 1, height);   // the dividing line
+
+  const total = WIDTH * height / 2, thr = Number($("threshold").value);
+  const pl = Math.round(100 * left / total), pr = Math.round(100 * right / total);
+  const L = pl >= thr, R = pr >= thr;
+  meter("left", pl, L); meter("right", pr, R);
+
+  // nobody there: let the empty picture follow slow light changes
+  if (!L && !R) for (let j = 0; j < g.length; j++) background[j] += ADAPT * (g[j] - background[j]);
+
+  decide(L, R, performance.now());
+}
+
+// one side lights up first, then the other: that's a passage, and its order gives the direction
+function decide(L, R, now) {
+  if (det.busy) {                                   // wait until the person has left the picture
+    if (L || R) det.quietSince = 0;
+    else if (!det.quietSince) det.quietSince = now;
+    else if (now - det.quietSince > CLEAR_MS) { det.busy = false; det.first = null; }
+    return;
+  }
+  if (!det.first) {
+    if (L && !R) det.first = "L";
+    else if (R && !L) det.first = "R";
+    if (det.first) det.firstAt = now;
+    return;
+  }
+  if (det.first === "L" && R || det.first === "R" && L) {
+    const leftToRight = det.first === "L";
+    record(leftToRight !== data.swapped ? "in" : "out");
+    det.busy = true; det.quietSince = 0;
+  } else if (now - det.firstAt > WINDOW_MS) {
+    det.first = null;                                 // someone turned back or stood still: no event
+    det.busy = L || R;
+  }
+}
+
+function meter(side, pct, on) {
+  $("pct-" + side).textContent = pct + "%";
+  const bar = $("m-" + side);
+  bar.style.width = Math.min(100, pct) + "%";
+  bar.classList.toggle("on", on);
+}
+function showThreshold() {
+  const v = $("threshold").value;
+  $("threshold-value").textContent = v + "%";
+  $("t-left").style.left = $("t-right").style.left = v + "%";
+}
+
+// keep the screen on while counting, where the browser allows it
+let wakeLock = null;
+async function keepAwake() { try { wakeLock = await navigator.wakeLock?.request("screen"); } catch {} }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !$("run").hidden) keepAwake(); });
+
+// ---- wiring ----
+$("room").value = data.room || $("room").value;
+if (data.events.length) {
+  $("kept").hidden = false;
+  $("kept").textContent = `${data.events.length} events from earlier are still here, occupancy ${occupancy()}. Counting continues from there; press Reset on the next screen to start from zero.`;
+}
+
+$("b-start").onclick = async () => {
+  data.room = $("room").value.trim();
+  save();
+  try { await startCamera(); }
+  catch (err) {
+    const box = $("cam-error");
+    box.hidden = false;
+    box.textContent = err.name === "NotAllowedError"
+      ? "The camera was blocked. Allow camera access for this page in the browser settings, then press start again."
+      : "Could not open the camera: " + err.message;
+    return;
+  }
+  $("start").hidden = true; $("run").hidden = false;
+  $("room-label").textContent = data.room ? "people in " + data.room : "people in the room";
+  showCount(); showLog(); keepAwake();
+  takeBackground();
+  requestAnimationFrame(loop);
+};
+$("threshold").oninput = showThreshold;
+$("b-background").onclick = takeBackground;
+$("b-swap").onclick = () => {
+  data.swapped = !data.swapped; save();
+  $("b-swap").textContent = data.swapped ? "In is now right to left" : "In is now left to right";
+};
+$("b-csv").onclick = download;
+$("b-reset").onclick = () => {
+  if (!confirm(`Delete all ${data.events.length} events and set occupancy to 0?`)) return;
+  data.events = []; save();
+  showCount(); showLog(); $("last").textContent = "";
+};
+showThreshold();
+$("b-swap").textContent = data.swapped ? "In is now right to left" : "Swap in and out";
+
+// for testing without a door: simulate("in") or simulate("out") in the browser console
+window.simulate = event => record(event === "out" ? "out" : "in");
+window.occupancyCsv = csv;
+</script>
+</body>
+</html>

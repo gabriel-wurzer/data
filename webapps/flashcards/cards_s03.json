@@ -1,0 +1,86 @@
+[
+  {
+    "id": "json",
+    "session": 3,
+    "image": "images/json.png",
+    "question": "Which of these is true of JSON?",
+    "answers": [
+      "It is text that holds objects in curly braces and lists in square brackets",
+      "It knows numbers, text, true, false and null",
+      "It hands every value over as text, numbers included",
+      "It can only be read by JavaScript"
+    ],
+    "correct": [0, 1],
+    "explanation": "JSON keeps 11.6 a number and true a boolean. Python reads it with json.loads into a dictionary; every browser has a reader built in too."
+  },
+  {
+    "id": "key-and-value",
+    "session": 3,
+    "image": "images/key-and-value.png",
+    "question": "In {\"temperature\": 11.6, \"unit\": \"°C\"}, read into reading, what is right?",
+    "answers": [
+      "temperature and unit are keys, 11.6 and \"°C\" their values",
+      "reading[\"temperature\"] gives 11.6",
+      "reading[\"Temperature\"] also gives 11.6",
+      "reading[0] gives 11.6"
+    ],
+    "correct": [0, 1],
+    "explanation": "You pick a value by its key, letter for letter. A capital T gives a KeyError, and a dictionary has no positions to count."
+  },
+  {
+    "id": "nesting",
+    "session": 3,
+    "image": "images/nesting.png",
+    "question": "data = {\"location\": {\"lat\": 48.2}, \"last_three\": [11.6, 12.0, 12.4]}. Which lines are right?",
+    "answers": [
+      "data[\"location\"][\"lat\"] gives 48.2",
+      "data[\"last_three\"][0] gives 11.6",
+      "data[\"lat\"] gives 48.2",
+      "data[\"last_three\"][1] gives 11.6"
+    ],
+    "correct": [0, 1],
+    "explanation": "Go in step by step: first the outer key, then the inner one. Lists count from 0, so [0] is the first entry."
+  },
+  {
+    "id": "api",
+    "session": 3,
+    "image": "images/api.png",
+    "question": "What is an API, like the one the Vienna sensors answer through?",
+    "answers": [
+      "A web address that answers programs with data, usually JSON",
+      "Something you ask with an HTTP GET and query parameters such as interval",
+      "A web page designed for people to read",
+      "A file that must be downloaded and installed first"
+    ],
+    "correct": [0, 1],
+    "explanation": "An API answers a program, not a person. You can still open its URL in a browser and see the raw JSON."
+  },
+  {
+    "id": "iso-8601-interval",
+    "session": 3,
+    "image": "images/iso-8601-interval.png",
+    "question": "What does R30/2025-10-17T00:00/P1D ask for?",
+    "answers": [
+      "30 values, one per day, starting 17 October 2025 at midnight",
+      "The same 30 days as R60/2025-10-17T00:00/PT12H, cut into days instead of half days",
+      "One value for the whole of October 2025",
+      "30 values, one per hour"
+    ],
+    "correct": [0, 1],
+    "explanation": "R is repeat, P is period, T says a time follows: P1D is one day, PT12H twelve hours. Sixty half days are the same thirty days."
+  },
+  {
+    "id": "xml",
+    "session": 3,
+    "image": "images/xml.png",
+    "question": "Which of these is true of XML?",
+    "answers": [
+      "Values sit between an opening and a closing tag, like <temperature>11.6</temperature>",
+      "Read with xml.etree, 11.6 comes back as the text '11.6'",
+      "It is never used any more",
+      "It is always shorter than JSON"
+    ],
+    "correct": [0, 1],
+    "explanation": "XML hands everything over as text and writes most names twice, in the opening and closing tag. It lives on in gbXML, SVG, KML and inside every .docx file."
+  }
+]

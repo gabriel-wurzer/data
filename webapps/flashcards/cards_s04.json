@@ -1,0 +1,72 @@
+[
+  {
+    "id": "database",
+    "session": 4,
+    "image": "images/database.png",
+    "question": "What does a database give you that a pile of text files does not?",
+    "answers": [
+      "Tables in one place that programs can query, change and share",
+      "Links between tables, so a name is written only once",
+      "Data that can never be wrong",
+      "A faster internet connection"
+    ],
+    "correct": [0, 1],
+    "explanation": "In the shared log of session 4, two rooms had six spellings. In the database each room is one row, and everything else points at its key. The data can still be wrong; the -40 °C reading went in without complaint."
+  },
+  {
+    "id": "table-row-column",
+    "session": 4,
+    "image": "images/table-row-column.png",
+    "question": "In the table rooms (id, name, floor, area_m2), what is a row and what is a column?",
+    "answers": [
+      "A row is one room",
+      "A column is one property, with one kind of value, like area_m2",
+      "A row is one property of all rooms",
+      "A column is one room"
+    ],
+    "correct": [0, 1],
+    "explanation": "Row 4 is the studio: floor 2, 95 m². The column floor holds a whole number for every room."
+  },
+  {
+    "id": "key",
+    "session": 4,
+    "image": "images/key.png",
+    "question": "The sensor table stores room_id instead of the room name. Why?",
+    "answers": [
+      "room_id is a foreign key: it points at the key of a row in rooms",
+      "Renaming a room then changes one row, and every sensor follows",
+      "Numbers take less space, which is the main reason",
+      "SQL cannot store text"
+    ],
+    "correct": [0, 1],
+    "explanation": "When the library became the Reading room, one UPDATE was enough; the JOIN showed the new name at once. The key also refused a second room 6 and a sensor in room 99."
+  },
+  {
+    "id": "sql-query",
+    "session": 4,
+    "image": "images/sql-query.png",
+    "question": "What does  SELECT name FROM rooms WHERE floor = 2  do?",
+    "answers": [
+      "It asks for the names of the rooms on floor 2",
+      "WHERE keeps only the rows for which the condition is true",
+      "It moves all rooms to floor 2",
+      "It deletes the rooms that are not on floor 2"
+    ],
+    "correct": [0, 1],
+    "explanation": "SELECT only reads. Changing rows is UPDATE, removing them is DELETE, and both need a WHERE too, or they hit the whole table."
+  },
+  {
+    "id": "join",
+    "session": 4,
+    "image": "images/join.png",
+    "question": "What does  sensors JOIN rooms ON sensors.room_id = rooms.id  do?",
+    "answers": [
+      "It glues to each sensor the row of its room",
+      "It matches where the foreign key equals the key",
+      "It copies all rooms into the sensor table for good",
+      "It adds the two tables up"
+    ],
+    "correct": [0, 1],
+    "explanation": "The JOIN puts back together what the keys keep apart, only in the answer; the tables stay as they are. With a second JOIN to readings you got the temperature of every room by name."
+  }
+]

@@ -1,0 +1,13 @@
+sessions/privat/
+build/_review*
+build/__pycache__/
+__pycache__/
+.ipynb_checkpoints/
+notebooks/_probe_*
+notebooks/*.db
+notebooks/*.txt
+notebooks/*.csv
+notebooks/*.obj
+notebooks/my_files/
+notebooks/my_*
+data/*.db
